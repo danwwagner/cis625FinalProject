@@ -1,0 +1,25 @@
+Project description and notes
+	
+First time using this algorithm (even in serial)
+Grad students do DFT calculations
+We make the algorithm faster?
+Has experience with parameter training
+Population contains large dataset
+	Plug into equations to predict properties
+	Keep the good ones via fitness function	
+		Smaller values are better
+Minimization problem
+Code the equations in c++ probably
+	Parallelize for given number of populations
+	Different teams parallelize in different ways?
+	Form new populations by combining different good subsets?
+Meet with groups individually via schedules
+LAMMPS code required (has source => diferent from Github?)
+Writing an interface that runs this code and uses LAMMPS
+Main challenge: how do we determine/generate populations using genetic algorithm
+	Have to talk in details
+	Look into a well known algorithm
+Test cases where we know what to expect: not as of yet
+Has Python code for the genetic algorithm
+	Both genetic and simplex: don't have to start from scratch
+MAIN GOALS: interface with LAMMPS and parallelize the algorithms
