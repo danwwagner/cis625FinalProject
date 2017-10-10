@@ -1,0 +1,175 @@
+#!/bin/bash
+
+##  Basics: Number of nodes, processors per node (ppn), and walltime (hhh:mm:ss)
+#PBS -l nodes=4:ppn=8
+#PBS -l walltime=20:00:00
+#PBS -N GA_Mo-adatom-4O
+#PBS -A cnm29902
+
+## File names for stdout and stderr.  If not set here, the defaults
+## are <JOBNAME>.o<JOBNUM> and <JOBNAME>.e<JOBNUM>
+#PBS -o vasp.out
+#PBS -e err.out
+
+## send mail at begin, end, abort, or never (b, e, a, n)
+#PBS -m a
+
+# change into the directory where qsub will be executed
+cd $PBS_O_WORKDIR
+
+# count allocated cores
+NPROCS=`wc -l < $PBS_NODEFILE`
+
+# start MPI job over default interconnect
+
+here=`pwd`
+Npop=10 # Number of individuals in population
+Nfit=10  # Number of fittest individuals
+NG=4    # Number of generations to run
+NO=4    # Number of oxygen atoms
+H=0.20  # Height of oxygen atoms, in reduced coordinates
+M=0.2   # Mutate rate
+minD=1.5  # Minimum distance between atoms, in angstroms
+
+# Run initial batch 
+  g=0
+  mkdir $here/G$g
+
+  for n in `seq 1 $Npop`
+  do
+    mkdir $here/G$g/S$n
+    cd $here/G$g/S$n
+    cp $here/INCAR .
+    cp $here/KPOINTS .
+    cp $here/POTCAR .
+    D=1
+    while [ $D -gt 0 ]; do  # Keep making random POSCARs until minimum distance requirements are satisfied
+      sed -n '1,5p' $here/POSCAR > POSCAR
+      NAtoms=`sed -n '6p' $here/POSCAR`
+      echo $NO $NAtoms >> POSCAR
+      echo Selective Dynamics >> POSCAR
+      echo Direct >> POSCAR
+      for m in `seq 1 $NO`
+      do 
+        X=`echo $RANDOM | awk '{ printf "%20.14f", $1/32767 }'`
+        Y=`echo $RANDOM | awk '{ printf "%20.14f", $1/32767 }'`
+        echo $X $Y $H T T F >> POSCAR
+      done
+      sed -n '9,$p' $here/POSCAR >> POSCAR
+      D=`convasp -dist $minD < POSCAR  | sed -n '6,$p' | sed '/^[0-9]/d' | wc | awk '{ print $1 }'`
+    done
+    # Run calculations
+    mpirun -machinefile $PBS_NODEFILE -np $NPROCS vasp
+    rm CHG
+    mkdir FixedZ
+    cp * FixedZ
+    # Allow O z coordinate, and top Pt/Mo atoms to relax
+    mv CONTCAR POSCAR
+    sed -i '10,13s/F/T/' POSCAR  # O
+    sed -i '14s/F/T/g' POSCAR    # Mo
+    sed -i '17,19s/F/T/g' POSCAR # Pt
+    mpirun -machinefile $PBS_NODEFILE -np $NPROCS vasp
+    rm CHG
+  done
+
+# Evolve
+
+  dE=1000
+  while [ $g -lt $NG ]; do
+
+  # fittest individuals in all generations
+
+    # check all energies
+    for i in `seq 0 $g`
+    do
+      for n in `seq 1 $Npop`
+      do
+        cd $here/G$i/S$n
+        E=`grep "free  e" OUTCAR | tail -n 1 | awk '{ print $5 }'`
+        D=`grep -c "Total CPU" OUTCAR`
+        echo $i $n $E $D  >> $here/Results$g.txt
+      done
+    done
+    cat $here/Results$g.txt | sort -n -k3 | head -$Nfit > $here/BestG$g.txt
+    EBest=`head -1 $here/BestG$g.txt | awk '{ print $3 }'`
+
+    # create parent POSCARs in new generation
+    mkdir $here/G$((g+1))
+    for n in `seq 1 $Nfit`
+    do
+      ig=`sed -n "$n p" $here/BestG$g.txt | awk '{ print $1 }'`
+      is=`sed -n "$n p" $here/BestG$g.txt | awk '{ print $2 }'`
+      cat $here/G$ig/S$is/CONTCAR | sed '/O/d' > $here/TMP
+      convasp -incell < $here/TMP > $here/G$((g+1))/CONTCAR$n
+    done
+    g=$((g+1))
+
+  # create offsprings
+    for n in `seq 1 $Npop`
+    do
+      mkdir $here/G$g/S$n  
+      cd $here/G$g/S$n
+
+      D=1
+     while [ $D -gt 0 ]; do  # Keep making POSCARs from previous generation until minimum distance requirements are satisfied
+
+        # choose parents
+        P1=`echo $RANDOM $Nfit | awk '{ printf "%d", $1/32767*$2+1 }'` 
+        P2=$P1
+        while [ $P1 -eq $P2 ]; do
+          P2=`echo $RANDOM $Nfit | awk '{ printf "%d", $1/32767*$2+1 }'`  
+        done
+
+        # choose x or y 
+        XorY=`echo $RANDOM | awk '{ printf "%d", $1/32767*2+1 }'`
+        echo $P1 $P2 $XorY > LOG
+ 
+        # combine parents
+        O1=`sed -n '9,10p' $here/G$g/CONTCAR$P1 | sort -n -k$XorY | sed -n '1p' | awk '{ print $1, $2, $3 }'`
+        O2=`sed -n '9,10p' $here/G$g/CONTCAR$P2 | sort -n -k$XorY | sed -n '2p' | awk '{ print $1, $2, $3 }'`
+        # mutate
+        MN=`echo $M 32767 | awk '{ printf "%d", $1*$2 }'`
+        S=`echo $RANDOM`
+        if [ $S -lt $MN ]; then
+          x1=`echo $RANDOM | awk '{ print $1/32767 }'`
+          y1=`echo $RANDOM | awk '{ print $1/32767 }'`
+          x2=`echo $RANDOM | awk '{ print $1/32767 }'`
+          y2=`echo $RANDOM | awk '{ print $1/32767 }'`
+          O1=`echo $O1 $x1 $y1 | awk '{ print $1+$4, $2+$5, $3 }'`
+          O2=`echo $O2 $x2 $y2 | awk '{ print $1+$4, $2+$5, $3 }'`
+        fi
+        sed -n '1,8p' $here/G$g/CONTCAR1 > POSCAR
+        echo $O1 T T F >> POSCAR
+        echo $O2 T T F >> POSCAR
+        sed -n '11,$p' $here/G$g/CONTCAR1 >> POSCAR
+        D=`convasp -dist $minD < POSCAR  | sed -n '6,$p' | sed '/^[0-9]/d' | wc | awk '{ print $1 }'`
+      done
+      # run calculations
+      cp $here/INCAR .
+      cp $here/POTCAR .
+      cp $here/KPOINTS .
+      mpirun -machinefile $PBS_NODEFILE -np $NPROCS vasp
+      rm CHG
+      mkdir FixedZ
+      cp * FixedZ
+      # Allow O z coordinate, and top Pt/Mo atoms to relax
+      mv CONTCAR POSCAR
+      sed -i '10,13s/F/T/' POSCAR  # O
+      sed -i '14s/F/T/g' POSCAR    # Mo
+      sed -i '17,19s/F/T/g' POSCAR # Pt
+      mpirun -machinefile $PBS_NODEFILE -np $NPROCS vasp
+      rm CHG
+    done
+
+    # Compare energies
+    for n in `seq 1 $Npop`
+    do
+      cd $here/G$g/S$n
+      E=`grep "free  e" OUTCAR | tail -n 1 | awk '{ print $5 }'`
+      echo $n $E  >> $here/G$g/Energies.txt
+    done
+    ENew=`cat $here/G$g/Energies.txt | sort -n -k2 | head -1 | awk '{ print $2 }'`
+    dE=`echo $ENew $EBest | awk '{ printf "%d", ($1-$2)*1000 }'`
+ 
+  done
+
