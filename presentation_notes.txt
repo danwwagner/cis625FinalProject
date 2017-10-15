@@ -1,0 +1,16 @@
+1. Describe the problem
+2. Describe what has been attempted and not worked.
+3. Describe our approach to the problem and why it may work.
+
+
+I: Problem
+	Machine Learning to optimize parameters in genetic algorithms
+	Parallelizing the overall process to speed it up
+	Interfacing with LAMMPS to determine how good the results are
+II: Attempted
+	Different Parallel Genetic Algorithms
+		
+III: Approach
+	Master-Slave Parallel Genetic Algorithm
+	Star-like approach, one per processor
+	

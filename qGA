@@ -31,7 +31,9 @@ H=0.20  # Height of oxygen atoms, in reduced coordinates
 M=0.2   # Mutate rate
 minD=1.5  # Minimum distance between atoms, in angstroms
 
+
 # Run initial batch 
+# DAN NOTE: POTENTIAL PARALLELIZATION POINT  
   g=0
   mkdir $here/G$g
 
@@ -73,7 +75,7 @@ minD=1.5  # Minimum distance between atoms, in angstroms
   done
 
 # Evolve
-
+# DAN NOTE: POTENTIAL PARALLELIZATION POINT
   dE=1000
   while [ $g -lt $NG ]; do
 
