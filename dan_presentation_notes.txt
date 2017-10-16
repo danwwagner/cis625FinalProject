@@ -23,12 +23,14 @@ II: Attempted
 		
 III: Approach
 	Crossover of GA traits simulated with binary method (cant98.pdf, pg. 3 of 30)
+		90% crossover probabilty, 10% mutation probability (Project description.pdf)
 	Global single-popluation master-slave GA (cant98.pdf, section 5)
 		Master stores the population, executes GA ops, and distributes to slaves
 		Slaves only evaluate the fitness of what they've been given (single or subset)	
 		Star-like approach, one per processor
 		Evaluation of fitness is distributed
 		Figure 1 from cant98.pdf
+	Computation and communication ratio for distribution?
 	Master peforms GA operations on the dataset to spawn off individuals
 	The slave processes fitness of their individuals and feed the values into master
 	Synchronous: wait for all results and then move on (since we need to evaluate all individuals)
