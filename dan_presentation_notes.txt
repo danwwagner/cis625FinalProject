@@ -1,3 +1,5 @@
+From Monday: 15 min talk with 5-10min reserved for Q&A.
+
 1. Describe the problem
 2. Describe what has been attempted and not worked.
 3. Describe our approach to the problem and why it may work.
@@ -7,10 +9,36 @@ I: Problem
 	Machine Learning to optimize parameters in genetic algorithms
 	Parallelizing the overall process to speed it up
 	Interfacing with LAMMPS to determine how good the results are
+
 II: Attempted
 	Different Parallel Genetic Algorithms
+		Single-population fine-grained
+			Suited for massively parallel PCs
+			One spatially-structured population
+			Selection/mating restricted to small neighborhood
+		Global single-population master-slave
+		Multiple-population coarse grained
+			More sophisticated: consist of subpopulations that exchange individuals (migration)
+			Migration is controlled by several parameters
 		
 III: Approach
-	Master-Slave Parallel Genetic Algorithm
-	Star-like approach, one per processor
-	
+	Crossover of GA traits simulated with binary method (cant98.pdf, pg. 3 of 30)
+	Global single-popluation master-slave GA (cant98.pdf, section 5)
+		Master stores the population, executes GA ops, and distributes to slaves
+		Slaves only evaluate the fitness of what they've been given (single or subset)	
+		Star-like approach, one per processor
+		Evaluation of fitness is distributed
+		Figure 1 from cant98.pdf
+	Master peforms GA operations on the dataset to spawn off individuals
+	The slave processes fitness of their individuals and feed the values into master
+	Synchronous: wait for all results and then move on (since we need to evaluate all individuals)
+	Straightforward implementation and doesn't modify how the GA performs its work
+
+Powerpoint slides and notes
+	Introduction to PGAs
+	Overview of the three PGAs we considered initially
+	Overview of LAMMPS
+	Diagram of how this all interacts?
+	Decision of PGA and why it would be the best
+	Dr. Liu: each generation takes about one hour
+		Design goals: reduce by a factor of 10?
