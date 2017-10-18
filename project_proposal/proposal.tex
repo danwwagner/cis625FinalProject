@@ -1,0 +1,54 @@
+\documentclass[letterpaper, 12pt]{article}
+\usepackage[american]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[citestyle=apa,style=apa,backend=biber]{biblatex}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\setlength\bibitemsep{2\itemsep}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{bibliography.bib}
+
+\begin{document}
+\begin{titlepage}
+\centering
+	\vspace*{5.75cm}
+	{\huge\bfseries Project proposal\par}
+	\vspace{2cm}
+	Blair Urish\\
+	Dan Wagner\\
+	Kansas State University\\
+	College of Engineering\\
+	Department of Computer Science\\
+	\vspace{1cm}
+	professor name\\
+	Professor\\
+	Department of Computer Science\\
+	\vspace{1cm}
+	October 29, 2017
+\end{titlepage}
+
+\begin{abstract}
+\thispagestyle{plain}
+\begin{flushleft}
+	Abstract goes here if we need it.
+\end{flushleft}
+\end{abstract}
+~\newpage
+
+\begin{flushleft}
+
+\section*{Introduction}
+\subsection*{Background Research}
+
+
+\section*{Methodology}
+
+\section*{Conclusion}
+
+\newpage
+\printbibliography
+
+\end{flushleft}
+\end{document}
