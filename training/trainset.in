@@ -1,0 +1,30 @@
+ENERGY  
+#Weigh op1 Key1  n1  op2 Key2  n2  op3 Key3  n3  op4 Key4  n4  op5 Key5  n5  #Lit (f6.2,5(1x,a1,3x,a5,1x,i3),f10.4)  
+# Volume Ptbcc EOS
+ 5.0   +   Ptbcc /16 -   0.93xPtbcc /16                                        -3.73809452222
+ 5.0   +   Ptbcc /16 -   0.95xPtbcc /16                                        -1.69788994444
+ 5.0   +   Ptbcc /16 -   0.97xPtbcc /16                                        -0.4931483
+ 5.0   +   Ptbcc /16 -   1.03xPtbcc /16                                        -0.25253717111
+ 5.0   +   Ptbcc /16 -   1.05xPtbcc /16                                        -0.89880629666
+ 5.0   +   Ptbcc /16 -   1.07xPtbcc /16                                        -1.76057106333
+# Volume Ptfcc EOS
+ 5.0   +   Ptfcc /16 -   0.93xPtfcc /16                                        -4.97447680357 
+ 5.0   +   Ptfcc /16 -   0.95xPtfcc /16                                        -2.31664886643
+ 5.0   +   Ptfcc /16 -   0.97xPtfcc /16                                        -0.76395128071
+ 5.0   +   Ptfcc /16 -   1.03xPtfcc /16                                        -0.55017182071
+ 5.0   +   Ptfcc /16 -   1.05xPtfcc /16                                        -1.42623192643
+ 5.0   +   Ptfcc /16 -   1.07xPtfcc /16                                        -2.57754266
+# Volume Ptsc EOS
+ 5.0   +   Ptsc /16 -   0.93xPtsc /16                                          -1.64951364712
+ 5.0   +   Ptsc /16 -   0.95xPtsc /16                                          -0.77984123
+ 5.0   +   Ptsc /16 -   0.97xPtsc /16                                          -0.27175695625
+ 5.0   +   Ptsc /16 -   1.03xPtsc /16                                          -0.20290538375
+ 5.0   +   Ptsc /16 -   1.05xPtsc /16                                          -0.4876238075
+ 5.0   +   Ptcc /16 -   1.07xPtsc /16                                          -0.86088923375
+# Volume Ptbhcp EOS
+ 5.0   +   Pthcp /16 -   0.93xPthcp /16                                        -17.18019599
+ 5.0   +   Pthcp /16 -   0.95xPthcp /16                                        -8.028735225
+ 5.0   +   Pthcp /16 -   0.97xPthcp /16                                        -7.297785225
+ 5.0   +   Pthcp /16 -   1.03xPthcp /16                                        -2.00502188
+ 5.0   +   Pthcp /16 -   1.05xPthcp /16                                        -5.036041865
+ 5.0   +   Pthcp /16 -   1.07xPthcp /16                                        -9.026956905
