@@ -1,0 +1,17 @@
+[0] Config.pm:340> INFO - This is Biber 2.4
+[0] Config.pm:343> INFO - Logfile is 'proposal.blg'
+[54] biber:287> INFO - === Mon Oct 23, 2017, 10:07:08
+[165] Biber.pm:348> INFO - Reading 'proposal.bcf'
+[309] Biber.pm:742> INFO - Found 2 citekeys in bib section 0
+[315] Biber.pm:3151> INFO - Processing section 0
+[344] Biber.pm:3308> INFO - Looking for bibtex format file 'bibliography.bib' for section 0
+[361] bibtex.pm:1113> INFO - Decoding LaTeX character macros into UTF-8
+[377] bibtex.pm:974> INFO - Found BibTeX data source 'bibliography.bib'
+[413] Utils.pm:147> WARN - Range field 'pages' in entry 'C7NR06038F' is malformed, skipping
+[474] UCollate.pm:65> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[474] UCollate.pm:65> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[475] Biber.pm:3028> INFO - Sorting list 'apa/global' of type 'entry' with scheme 'apa' and locale 'en-US'
+[475] Biber.pm:3032> INFO - No sort tailoring available for locale 'en-US'
+[479] bbl.pm:519> INFO - Writing 'proposal.bbl' with encoding 'UTF-8'
+[506] bbl.pm:615> INFO - Output to proposal.bbl
+[506] Biber.pm:109> INFO - WARNINGS: 1
