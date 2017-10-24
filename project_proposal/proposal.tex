@@ -39,10 +39,22 @@
 
 \begin{flushleft}
 
-\section*{Introduction}
+\section*{Background Research}
+Many fields require materials with properties that often conflict or trade off with one another.  Examples of such properties are low density, high strength, and high flexibility.  In most cases, it is difficult or impossible for traditional materials to exhibit combinations of these properties. Therefore, it is necessary to use hybrid materials that have organic and synthetic components. However, it is difficult to identify these compounds. \cite{C7NR06038F}.\\
 
-\subsection*{Background Research}
-Many fields require materials with properties that often conflict or trade off with one another.  Examples of such properties are low density, high strength, and high flexibility.  In most cases, it is difficult or impossible for traditional materials to exhibit combinations of these properties.
+Narayanan et. al. discuss two methods of identifying the components needed to create a hybrid material. The first
+method discussed is known as the Reactive Force Field (ReaxFF). The authors state that ReaxFF can describe ``bond formation/dissociation, chemical reaction pathways, and transition states in a diverse class of materials.'' However, they note a major issue with ReaxFF: efficiency. ReaxFF requires a large amount of computing power to do its calculations. Many scientists require running simulations with large sample sizes to which ReaxFF does not scale. \\
+~\newline
+Bond order potentials (BOP) are a different approach that Narayanan et. al. believe could be significantly more
+efficient than ReaxFF. They present an approach that combines Tersoff-Brenner modeling with machine learning that
+allows for approximations of the attributes needed to describe the hybrid materials mentioned earlier. The goal
+with this technique is to provide fairly accurate results compared with ReaxFF. The authors note that
+ReaxFF will still be required for certain heterostructures like oxides. \\
+~\newline
+However, as noted by Dr. Bin Liu, this machine learning algorithm alone is still not performing as well as 
+certain scientists require. He believes that it is possible to introduce parallelization to this existing
+algorithm in order to further improve performance. In the next section, we will discuss the approach that we
+will be taking in order to parallelize this algorithm. 
 
 \section*{Methodology}
  The overall design process can be seen in the following figure.
