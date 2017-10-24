@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{float}
+\usepackage{array}
 \setlength\bibitemsep{2\itemsep}
 \DeclareLanguageMapping{american}{american-apa}
 \addbibresource{bibliography.bib}
@@ -14,7 +15,8 @@
 \begin{titlepage}
 \centering
 	\vspace*{5.75cm}
-	{\huge\bfseries Project proposal\par}
+	{\huge\bfseries Project Proposal\par}
+	{\large Parallelizing Machine Learning to Optimize Parameters in Genetic Algorithms\par}
 	\vspace{2cm}
 	Blair Urish\\
 	Dan Wagner\\
@@ -32,10 +34,10 @@
 \begin{abstract}
 \thispagestyle{plain}
 \begin{flushleft}
-	Abstract goes here if we need it.
+	It is difficult for traditional materials to have some desirable traits that often conflict with one another.  Hybrid materials are crafted to solve this, but the compounds are difficult to identify.  Using machine learning and genetic algorithms to locate the traits of these compounds has had success but is inefficient in computing power.  Thus, we propose an approach to parallelize the process by distributing the work across several nodes in a master-slave relationship.  This method will allow the computation time to be spread across chunks of data, and result in an overall lower run time.
 \end{flushleft}
 \end{abstract}
-~\newpage
+\newpage
 
 \begin{flushleft}
 
@@ -54,8 +56,9 @@ ReaxFF will still be required for certain heterostructures like oxides. \\
 However, as noted by Dr. Bin Liu, this machine learning algorithm alone is still not performing as well as 
 certain scientists require. He believes that it is possible to introduce parallelization to this existing
 algorithm in order to further improve performance. In the next section, we will discuss the approach that we
-will be taking in order to parallelize this algorithm. 
+will be taking in order to parallelize this algorithm.  Following that, we will present our conclusions and future work preparations.
 
+\newpage
 \section*{Methodology}
  The overall design process can be seen in the following figure.
 
@@ -64,26 +67,49 @@ will be taking in order to parallelize this algorithm.
  	\caption[Overall Flow of Genetic Algorithm Process]{Overall Flow of Genetic Algorithm Process. Adapted from \cite{C7NR06038F}}
  	\label{fig:arch}
  \end{figure}
- The main optimizations will be taking place within the global optimization loop and the local optimization section, as seen above. The loop will contain the majority of our implementation.  The local optimization section will be carried out primarily with LAMMPS.\\
- 
- ~\newline A global single-population master-slave genetic algorithm was chosen as the best method of parallelization. The master node receives a population and divides individuals between the slave nodes.  Slave nodes will evaluate the fitness of individuals they receive and send the results back to the master node.  A visualization of this technique can be seen below.
+
+ The main optimizations will be taking place within the global and local optimization sections, as seen above. We will place a majority of our implementation within the global area, with the local section carried out primarily with LAMMPS.\\
+ ~\newline 
+ A global single-population master-slave genetic algorithm was chosen as the best method of parallelization. The master node receives one population and divides individuals between the slave nodes.  These slave nodes will evaluate the fitness of individuals they receive and send the results back to the master node.  A visualization of this technique can be seen in the following figure.
  
  \begin{figure}[H]
- 	\includegraphics[width=\linewidth,height=10cm,keepaspectratio]{model.png}
+ 	\centering
+ 	\includegraphics[width=\linewidth,height=5cm,keepaspectratio]{model.png}
  	\caption[Master-Slave Genetic Algorithm Implementation]{Master-Slave Distributed Genetic Algorithm. Adapted from \cite{cantu1998survey}}
  	\label{fig:arch}
  \end{figure}
 
-~\newline We will realize this solution using several nodes on the Beocat supercomputing cluster.   One computing node will be designated as the master node, while several other nodes will be the slave nodes.  The master node will receive the population of randomly generated parameter sets and the training set provided.  It will partition the population into subsets and send the sets to slave nodes for evaluation.  Each slave node will evaluate the fitness of each individual within their subset and transfer the results to the master node for modification via trait crossover and mutation. The best one hundred individuals are retained for subsequent generations.\\
+
+We will realize this solution using several nodes on the Beocat supercomputing cluster.  Initially, we plan to restrict our usage to the Elf class nodes. Their specifications can be seen in the accompanying table.
+~\newline
+
+\begin{table}[ht]
+	\centering
+	\caption{Beocat Elf Node Specifications}
+	\label{nodespecs}
+	\begin{tabular}{|l|l|}
+		\hline
+		Processors           & 2x 8-Core Xeon E5-2690               \\ \hline
+		RAM                  & 64GB                                 \\ \hline
+		Hard Drives          & 1x 250GB 7200 RPM SATA               \\ \hline
+		NICs                 & 4x Intel I350                        \\ \hline
+		10GbE/QDR Infiniband & Mellanox Technologies MT27500 Family \\ \hline
+	\end{tabular}
+\end{table}
 
 ~\newline
-This process will continue until the genetic algorithm fails to return better individuals than the previous run.  At this convergence step, the twenty best individuals are selected to be locally minimized by using the Simplex method.  Finally, the most optimized individual results in the best set of parameters for this generation. \\
+One computing node will be designated as the master node, while several other nodes will be the slave nodes.  OpenMPI in C++ will be used in order to facilitate communication between the master and slaves. The master node will receive a population of randomly generated parameter sets and the training set provided.  It will partition the population into subsets and send the sets to slave nodes for evaluation.  The size of these partitions could vary; ideally, each node would contain a chunk that fits wholly within the L3 cache. Each slave node will evaluate the fitness of each individual within their subset. Then, they will transfer the results back to the  master node for modification via trait crossover and mutation. The best one hundred individuals will be retained for subsequent generations.\\
+~\newline 
+This process will continue until the genetic algorithm fails to return better individuals than the previous run.  At this convergence step, the twenty best individuals will be selected to undergo local minimization by the Simplex method.  Finally, the most optimized individual results will be the best set of parameters for this generation. \\
+~\newline
+The Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS) package will be used to evaluate individuals' fitness.  This software is a classical molecular dynamics code developed by Sandia National Laboratories.  It has optimized integrations with OpenMPI, which will fit into our overall design very well. \\
+~\newline 
+A base run time of one hour per population has been established by Dr. Bin Liu.  Our implementation will run the same dataset, with the results and run times being compared for accuracy and performance.  We are expecting at least a factor of ten speedup by using OpenMPI and distributing the work across several nodes.
 
-~\newline The Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS) package will be used to evaluate individuals' fitness.  This software is a classical molecular dynamics code developed by Sandia National Laboratories.  It has optimized integrations with MPI, which will fit into our overall design very well.
 
 
 
-
+\newpage
 \section*{Conclusion}
 
 \newpage
