@@ -2209,10 +2209,10 @@
     <bcf:datasource type="file" datatype="bibtex">bibliography.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">cantu1998survey</bcf:citekey>
-    <bcf:citekey order="2">cantu1998survey</bcf:citekey>
-    <bcf:citekey order="3">C7NR06038F</bcf:citekey>
-    <bcf:citekey order="4">C7NR06038F</bcf:citekey>
+    <bcf:citekey order="1">C7NR06038F</bcf:citekey>
+    <bcf:citekey order="2">C7NR06038F</bcf:citekey>
+    <bcf:citekey order="3">cantu1998survey</bcf:citekey>
+    <bcf:citekey order="4">cantu1998survey</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="apa/global" type="entry" sortscheme="apa" sortnamekeyscheme="global">
   <bcf:sorting>
