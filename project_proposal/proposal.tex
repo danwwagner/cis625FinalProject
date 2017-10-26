@@ -11,6 +11,9 @@
 \DeclareLanguageMapping{american}{american-apa}
 \addbibresource{bibliography.bib}
 
+% my version of latex does not support this character apparently..
+\DeclareUnicodeCharacter{2212}{-}
+
 \begin{document}
 \begin{titlepage}
 \centering
@@ -42,8 +45,8 @@
 \begin{flushleft}
 
 \section*{Background Research}
-Many fields require materials with properties that often conflict or trade off with one another.  Examples of such properties are low density, high strength, and high flexibility.  In most cases, it is difficult or impossible for traditional materials to exhibit combinations of these properties. Therefore, it is necessary to use hybrid materials that have organic and synthetic components. However, it is difficult to identify these compounds. \cite{C7NR06038F}.\\
-
+Many fields require materials with properties that often conflict or trade off with one another. (\cite{C7NR06038F}; \cite{Ritchie}).  Examples of such properties are low density, high strength, and high flexibility.  In most cases, it is difficult or impossible for traditional materials to exhibit combinations of these properties. Therefore, it is necessary to use hybrid materials that have organic and synthetic components. However, it is difficult to identify these compounds. (\cite{C7NR06038F}; \cite{Wight}).\\
+~\newline
 Narayanan et. al. discuss two methods of identifying the components needed to create a hybrid material. The first
 method discussed is known as the Reactive Force Field (ReaxFF). The authors state that ReaxFF can describe ``bond formation/dissociation, chemical reaction pathways, and transition states in a diverse class of materials.'' However, they note a major issue with ReaxFF: efficiency. ReaxFF requires a large amount of computing power to do its calculations. Many scientists require running simulations with large sample sizes to which ReaxFF does not scale. \\
 ~\newline
