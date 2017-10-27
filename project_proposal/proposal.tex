@@ -11,6 +11,9 @@
 \DeclareLanguageMapping{american}{american-apa}
 \addbibresource{bibliography.bib}
 
+% my version of latex does not support this character apparently..
+\DeclareUnicodeCharacter{2212}{-}
+
 \begin{document}
 \begin{titlepage}
 \centering
@@ -41,8 +44,8 @@
 \begin{flushleft}
 
 \section*{Background Research}
-Many fields require materials with properties that often conflict or trade off with one another.  Examples of such properties are low density, high strength, and high flexibility.  In most cases, it is difficult or impossible for traditional materials to exhibit combinations of these properties. Therefore, it is necessary to use hybrid materials that have organic and synthetic components. However, it is difficult to identify these compounds. \cite{C7NR06038F}.\\
-
+Many fields require materials with properties that often conflict or trade off with one another. (\cite{C7NR06038F}; \cite{Ritchie}).  Examples of such properties are low density, high strength, and high flexibility.  In most cases, it is difficult or impossible for traditional materials to exhibit combinations of these properties. Therefore, it is necessary to use hybrid materials that have organic and synthetic components. However, it is difficult to identify these compounds. (\cite{C7NR06038F}; \cite{Wight}).\\
+~\newline
 Narayanan et. al. discuss two methods of identifying the components needed to create a hybrid material. The first
 method discussed is known as the Reactive Force Field (ReaxFF). The authors state that ReaxFF can describe ``bond formation/dissociation, chemical reaction pathways, and transition states in a diverse class of materials.'' However, they note a major issue with ReaxFF: efficiency. ReaxFF requires a large amount of computing power to do its calculations. Many scientists require running simulations with large sample sizes to which ReaxFF does not scale. \\
 ~\newline
@@ -103,14 +106,17 @@ This process will continue until the genetic algorithm fails to return better in
 ~\newline
 The Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS) package will be used to evaluate individuals' fitness.  This software is a classical molecular dynamics code developed by Sandia National Laboratories.  It has optimized integrations with OpenMPI, which will fit into our overall design very well. \\
 ~\newline 
-A base run time of one hour per population has been established by Dr. Bin Liu.  Our implementation will run the same dataset, with the results and run times being compared for accuracy and performance.  We are expecting at least a factor of ten speedup by using OpenMPI and distributing the work across several nodes.
+A base run time of one hour per population has been established by Dr. Bin Liu.  Our implementation will run the same dataset, with the results and run times being compared for accuracy and performance.  We are expecting at least a factor of ten speedup on a single core by using OpenMPI and distributing the work across several nodes.
 
 
 
 
 \newpage
 \section*{Conclusion}
+We have proposed a way to parallelize the process of optimizing hybrid material properties in genetic algorithms.  A global single-population master-slave approach will divide up the population into subsets of individuals and then pass them to slave nodes.  Slaves will operate on their data with LAMMPS and evaluate the fitness of each individual.  These results will be sent back to the master node who will perform genetic operations on them.  We expect a factor of ten speedup, at the minimum, to be exhibited on a single core as we work.
 
+\section*{Future Work}
+Future work will include implementing the master-slave genetic algorithm using OpenMPI and C++ with an interface into LAMMPS.  The software will be benchmarked and checked for accuracy.
 \newpage
 \printbibliography
 
