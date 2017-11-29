@@ -1,0 +1,121 @@
+LAMMPS (17 Nov 2016)
+# Tersoff potential for Pt system
+# .....
+
+dimension      3
+boundary       p p p
+units          real
+
+atom_style      charge
+read_data       data.in   ###Pt structures are specified here.
+  orthogonal box = (0 0 0) to (3.977 3.977 3.977)
+  1 by 1 by 2 MPI processor grid
+  reading atoms ...
+  4 atoms
+
+pair_style      tersoff  ### potential types are specified here.
+pair_coeff      * * Pt.tersoff Pt  ### potential
+
+neighbor        2 bin
+neigh_modify    every 10 delay 0 check no
+
+#fix            1 all nvt temp 0.01 0.01 25 iso 1.0 1.0 250
+#fix             1 all qeq/reax 1 0.0 10.0 1e-6 param.qeq
+minimize        1.0e-4  1.0e-6  100  1000
+WARNING: Resetting reneighboring criteria during minimization (../min.cpp:168)
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 7.1
+  ghost atom cutoff = 7.1
+  binsize = 3.55 -> bins = 2 2 2
+WARNING: Proc sub-domain size < neighbor skin, could lead to lost atoms (../domain.cpp:936)
+Memory usage per processor = 3.64774 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0            0   -3.3060055            0   -3.3060055    20770.576 
+       1            0   -3.3060055            0   -3.3060055    20770.576 
+Loop time of 0.00243472 on 2 procs for 1 steps with 4 atoms
+
+205.4% CPU use with 2 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+        -3.30600548703     -3.30600548703     -3.30600548703
+  Force two-norm initial, final = 9.781e-15 3.79923e-14
+  Force max component initial, final = 6.12878e-15 2.08444e-14
+  Final line search alpha, max atom move = 1 2.08444e-14
+  Iterations, force evaluations = 1 2
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0015564  | 0.0019421  | 0.0023279  |   0.9 | 79.77
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 5.7783e-05 | 0.00044356 | 0.00082933 |   1.8 | 18.22
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 4.905e-05  |            |       |  2.01
+
+Nlocal:    2 ave 2 max 2 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+Nghost:    286 ave 286 max 286 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+Neighs:    0 ave 0 max 0 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+FullNghs:  172 ave 172 max 172 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 344
+Ave neighs/atom = 86
+Neighbor list builds = 0
+Dangerous builds not checked
+timestep        0.25
+
+#dump           1 all atom 30 dump.reax.ab
+dump            1 all xyz 1 dump.tersoff.xyz
+
+run             100
+WARNING: No fixes defined, atoms won't move (../verlet.cpp:55)
+Neighbor list info ...
+  1 neighbor list requests
+  update every 10 steps, delay 0 steps, check no
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 7.1
+  ghost atom cutoff = 7.1
+  binsize = 3.55 -> bins = 2 2 2
+WARNING: Proc sub-domain size < neighbor skin, could lead to lost atoms (../domain.cpp:936)
+Memory usage per processor = 3.03823 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       1            0   -3.3060055            0   -3.3060055    20770.576 
+     101            0   -3.3060055            0   -3.3060055    20770.576 
+Loop time of 0.345072 on 2 procs for 100 steps with 4 atoms
+
+Performance: 6.260 ns/day, 3.834 hours/ns, 289.795 timesteps/s
+58.0% CPU use with 2 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.051191   | 0.057495   | 0.063799   |   2.6 | 16.66
+Neigh   | 9.5826e-05 | 0.00013082 | 0.00016581 |   0.3 |  0.04
+Comm    | 0.0027294  | 0.14581    | 0.28888    |  37.5 | 42.25
+Output  | 0.0048298  | 0.1415     | 0.27817    |  36.3 | 41.01
+Modify  | 1.0464e-05 | 2.658e-05  | 4.2696e-05 |   0.3 |  0.01
+Other   |            | 0.0001125  |            |       |  0.03
+
+Nlocal:    2 ave 2 max 2 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+Nghost:    286 ave 286 max 286 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+Neighs:    0 ave 0 max 0 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+FullNghs:  172 ave 172 max 172 min
+Histogram: 2 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 344
+Ave neighs/atom = 86
+Neighbor list builds = 10
+Dangerous builds not checked
+Total wall time: 0:00:00

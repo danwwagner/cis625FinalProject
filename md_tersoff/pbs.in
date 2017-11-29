@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Job name
+#$ -N test
+
+# Make sure that the .e and .o file stored in the working directory
+#$ -cwd
+
+# Merge the out and error file to one file
+#$ -j y
+
+##$ -l deny_restart
+
+# Requesting 3 G memory per cpu
+#$ -l mem=3G 
+
+#$ -pe single 2
+
+# Walltime 
+#$ -l h_rt=01:00:00
+
+# Run job in Bash shell
+#$ -l cpu_flags=*avx*
+
+# Send mail at submission and completion of script
+#$ -M binliu@ksu.edu
+#$ -m abe 
+
+# Choose appropriate mpirun  to use
+
+#export OMP_NUM_THREADS=1
+mpirun -np 2 ~/bin/lmp_icc_openmpi < in.pt
