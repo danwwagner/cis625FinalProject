@@ -11,10 +11,11 @@ using std::stringstream;
 
 class Individual
 {
-	public:
+	private:
 		// This maps parameter names to parameter values.
 		unordered_map<string, double> parameters;	
 		Random r;
+	public:
 		Individual() 
 		{
 			parameters = {
@@ -32,6 +33,10 @@ class Individual
 			};
 		}
 		~Individual() {}
+
+		// Allows this individual to be indexed for a given parameter.
+		// Example: individual["C"] returns parameter C.
+		double operator[](string parameter) { return parameters[parameter]; }
 
 		// Iterating over this class will iterate over parameter map.
 		auto begin() { return parameters.begin(); }
