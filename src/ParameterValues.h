@@ -1,8 +1,8 @@
 #pragma once
 
-const double VARIATION_RANGE = 0.25;
+const double VARIATION_RANGE = 0.2;
 
-const double BASE_C = 3.0611;
+const double BASE_C = 30611;
 const double C_UPPER = BASE_C+(BASE_C*VARIATION_RANGE);
 const double C_LOWER = BASE_C-(BASE_C*VARIATION_RANGE);
 
@@ -34,7 +34,7 @@ const double BASE_R = 2.85;
 const double R_UPPER = BASE_R+(BASE_R*VARIATION_RANGE);
 const double R_LOWER = BASE_R-(BASE_R*VARIATION_RANGE);
 
-const double BASE_S = 3.25;
+const double BASE_S = 2.25;
 const double S_UPPER = BASE_S+(BASE_S*VARIATION_RANGE);
 const double S_LOWER = BASE_S-(BASE_S*VARIATION_RANGE);
 
