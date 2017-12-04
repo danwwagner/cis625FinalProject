@@ -34,12 +34,13 @@ class Genetics
 			// Exchange the traits from the threshold beyond.
 			// According to Cantu PDF, it's a simple swap.
 			for (auto pair<string, double> : ind_1) {
-				if (count >= cross_thresh) {
-					auto temp = pair;
-					ind_1 = ind_2.parameters[pair.first];
-					ind_2 = temp;
+				if (count < cross_thresh) {
+					count++;
+					continue;
 				}
-				count++;
+				auto temp = pair;
+				ind_1[pair.first] = ind_2[pair.first];
+				ind_2[pair.first] = temp;
 			}
 		}
 
