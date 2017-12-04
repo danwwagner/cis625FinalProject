@@ -1,4 +1,5 @@
 #include "Individual.h"
+#include "Random.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,6 +9,7 @@ using std::string;
 class Genetics
 {
 	private:
+		Random r;
 		int _numTraits, _popSize;
 		float _crossProb, _mutProb;
 	public:
@@ -19,7 +21,6 @@ class Genetics
 			_mutProb = mut;
 			_numTraits = traits;
 			_popSize = population;
-			srand(time(NULL));  // initialize random seed
 		}
 
 		~Genetics()
@@ -28,7 +29,7 @@ class Genetics
 		void Crossover(Individual& ind_1, Individual& ind_2)
 		{
 			// Get the crossover threshold
-			auto cross_thresh = rand() % _numTraits;
+			auto cross_thresh = r.integer(0, _numTraits);
 			auto count = 0;
 
 			// Exchange the traits from the threshold beyond.
@@ -50,12 +51,13 @@ class Genetics
 		}
 
 		// Iterates through the population to find the best parent.
+		// TODO: population is the set of individuals in the population
 		Individual TournamentSelection(Individual &population, int size) {
 			Individual best = NULL;
 			double fitness = 0.0;
 			for (int i = 0; i < size; i++) {
-				auto sel = rand() % _popSize; 
-				Individual test = population[sel];
+				auto sel = r.integer(0, size); 
+				Individual test = population[sel];  // Select a random individual
 
 				// The best parent is the individual with the highest fitness.
 				if (test.fitness > fitnes) {
