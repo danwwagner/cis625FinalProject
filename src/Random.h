@@ -14,4 +14,9 @@ class Random
 			std::uniform_real_distribution<double> dist(min, max);
 			return dist(mt);
 		}
+		double integer(int min, int max)
+		{
+			std::uniform_int_distribution<int> dist(min, max);
+			return dist(mt);
+		}
 };
