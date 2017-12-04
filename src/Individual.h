@@ -30,18 +30,17 @@ class Individual
 			// not a great way to do this, but it works.
 			// currently requires a temporary file.
 			// TODO: When parallelizing, this will NEED to be looked at.
-			std::string line;
-			auto fd = popen("/usr/bin/lammps < in.pt | awk '/Energy/{getline; print $3}' > out", "w");
+			auto fd = popen("/usr/bin/lammps < in.pt | awk '/Energy/{getline; print $3}'", "r");
+			char buffer[BUFSIZ];
+			std::fgets(buffer, sizeof(buffer), fd);			
 			pclose(fd);
 
-			std::ifstream out;
-			out.open("out");
-			std::getline(out, line);	
+			// string line(buffer);
+			if (buffer[0] == '\0') return std::nan("invalid individual");	
 
-			if (line.empty()) return std::nan("invalid individual");
-	
-			double energy = std::atof(line.c_str());
+			double energy = std::atof(buffer);
 			std::cout << "Energy: " << energy << std::endl;
+
 			return energy; // TODO: This is not actually the fitness yet.
 		}
 
@@ -54,6 +53,7 @@ class Individual
 			// This shouldn't happen very often unless we are really unlucky.
 			do 
 			{
+				std::cout << "Initializing indiv" << std::endl;
 				parameters = {
 					{"C", r.real(C_LOWER,C_UPPER)},
 					{"D", r.real(D_LOWER,D_UPPER)},
