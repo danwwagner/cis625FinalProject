@@ -1,2 +1,2 @@
 all:
-	g++ main.cpp -o ga
+	g++ -fopenmp main.cpp -o ga

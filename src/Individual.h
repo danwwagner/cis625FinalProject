@@ -53,8 +53,6 @@ class Individual
 			std::fgets(buffer, sizeof(buffer), fd);			
 			pclose(fd);
 
-			std::cout << "Buffer1: " << buffer << std::endl;
-
 			if (buffer[0] == '\0') return std::nan("invalid individual");	
 
 			double ptbcc = std::atof(buffer);
@@ -83,7 +81,7 @@ class Individual
 			std::fgets(buffer, sizeof(buffer), fd);
 			pclose(fd);
 
-			std::cout << "Buffer2: " << buffer << std::endl;
+			// std::cout << "Buffer2: " << buffer << std::endl;
 			
 			// Remove temp file.
 			std::remove(("/tmp/Pt.tersoff."+id).c_str());
@@ -107,7 +105,6 @@ class Individual
 			// This shouldn't happen very often unless we are really unlucky.
 			do 
 			{
-				std::cout << "Initializing indiv" << std::endl;
 				parameters = {
 					{"C", r.real(C_LOWER,C_UPPER)},
 					{"D", r.real(D_LOWER,D_UPPER)},

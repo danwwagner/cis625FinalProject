@@ -1,6 +1,6 @@
 #pragma once
 
-const int NUM_LAMMPS_THREADS = 1;
+static int NUM_LAMMPS_THREADS = 1;
 const double VARIATION_RANGE = 0.2;
 const double DFT_VALUE = -33.6428507;
 
