@@ -1,6 +1,8 @@
 #pragma once
 
+#define NUM_LAMMPS_THREADS 4
 const double VARIATION_RANGE = 0.2;
+const double DFT_VALUE = -33.6428507;
 
 const double BASE_C = 30611;
 const double C_UPPER = BASE_C+(BASE_C*VARIATION_RANGE);

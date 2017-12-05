@@ -3,6 +3,7 @@
 #include "ParameterValues.h"
 #include <unordered_map>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -27,21 +28,34 @@ class Individual
 			tmp << lammps_input_line();
 			tmp.close();
 
-			// not a great way to do this, but it works.
-			// currently requires a temporary file.
-			// TODO: When parallelizing, this will NEED to be looked at.
-			auto fd = popen("/usr/bin/lammps < in.pt | awk '/Energy/{getline; print $3}'", "r");
+			// TODO: Come back to this when parallelizing
+			
+			// First, we need to run lammps using the Ptbcc data.
+			auto fd = popen("/usr/bin/lammps < inPtbcc.pt | awk '/Energy/{getline; print $3}'", "r");
 			char buffer[BUFSIZ];
 			std::fgets(buffer, sizeof(buffer), fd);			
 			pclose(fd);
 
-			// string line(buffer);
+			std::cout << "Buffer1: " << buffer << std::endl;
+
 			if (buffer[0] == '\0') return std::nan("invalid individual");	
 
-			double energy = std::atof(buffer);
-			std::cout << "Energy: " << energy << std::endl;
+			double ptbcc = std::atof(buffer);
 
-			return energy; // TODO: This is not actually the fitness yet.
+			// Next, do the same thing but with the 0.97Ptbcc data.
+			std::memset(buffer, 0, sizeof(buffer));
+			fd = popen("/usr/bin/lammps < in97xPtbcc.pt | awk '/Energy/{getline; print $3}'", "r");
+			std::fgets(buffer, sizeof(buffer), fd);
+			pclose(fd);
+
+			std::cout << "Buffer2: " << buffer << std::endl;
+			if (buffer[0] == '\0') return std::nan("invalid individual");
+			double x97Ptbcc = std::atof(buffer);	
+
+			// Finally, perform the fitness calculations.
+			double diff = ptbcc - x97Ptbcc;
+
+			return (-1)*(DFT_VALUE-diff)*(DFT_VALUE-diff); // TODO: This is not actually the fitness yet.
 		}
 
 	public:
@@ -69,6 +83,10 @@ class Individual
 				};
 				fitness = EvaluateFitness();		
 			} while (std::isnan(fitness));
+		}
+		Individual (const Individual& other)
+		{
+			fitness = other.fitness;	
 		}
 		~Individual() {}
 
