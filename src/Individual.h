@@ -23,15 +23,32 @@ class Individual
 		{
 			// First, we need to write the pair coefficient data to a temporary file
 			std::ofstream tmp;
-			// TODO: change this when parallelizing.
-			tmp.open("/tmp/Pt.tersoff");		
+			string id = std::to_string(r.integer(0,1000000));
+			tmp.open("/tmp/Pt.tersoff." + id);		
 			tmp << lammps_input_line();
 			tmp.close();
 
-			// TODO: Come back to this when parallelizing
-			
 			// First, we need to run lammps using the Ptbcc data.
-			auto fd = popen("/usr/bin/lammps < inPtbcc.pt | awk '/Energy/{getline; print $3}'", "r");
+			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /usr/bin/lammps";
+			string awk_cmd = "awk '/Energy/{getline; print $3}'";
+			string inPtbcc = "printf 'dimension 3\n"
+							 "boundary p p p\n"
+							 "units real\n"
+							 "atom_style charge\n"
+							 "read_data dataPtbcc.in\n"
+							 "pair_style tersoff\n"
+							 "pair_coeff * * /tmp/Pt.tersoff."+id+" Pt\n"
+							 "neighbor 2 bin\n"
+							 "neigh_modify every 10 delay 0 check no\n"
+							 "minimize 1.0e-4 1.0e-6 100 1000\n"
+							 "timestep 0.25\n"
+							 "run 100\n'";
+			stringstream ss;
+			ss << inPtbcc << " | ";
+			ss << lammps_cmd << " | ";
+			ss << awk_cmd;
+
+			auto fd = popen(ss.str().c_str(), "r");
 			char buffer[BUFSIZ];
 			std::fgets(buffer, sizeof(buffer), fd);			
 			pclose(fd);
@@ -44,18 +61,41 @@ class Individual
 
 			// Next, do the same thing but with the 0.97Ptbcc data.
 			std::memset(buffer, 0, sizeof(buffer));
-			fd = popen("/usr/bin/lammps < in97xPtbcc.pt | awk '/Energy/{getline; print $3}'", "r");
+			ss.str("");
+
+			string inx97Ptbcc = "printf 'dimension 3\n"
+							  "boundary p p p\n"
+							  "units real\n"
+							  "atom_style charge\n"
+							  "read_data data97xPtbcc.in\n"
+							  "pair_style tersoff\n"
+							  "pair_coeff * * /tmp/Pt.tersoff."+id+" Pt\n"
+							  "neighbor 2 bin\n"
+							  "neigh_modify every 10 delay 0 check no\n"
+							  "minimize 1.0e-4 1.0e-6 100 1000\n"
+							  "timestep 0.25\n"
+							  "run 100\n'";
+			ss << inx97Ptbcc << " | ";
+			ss << lammps_cmd << " | ";
+			ss << awk_cmd;
+
+			fd = popen(ss.str().c_str(), "r");
 			std::fgets(buffer, sizeof(buffer), fd);
 			pclose(fd);
 
 			std::cout << "Buffer2: " << buffer << std::endl;
+			
+			// Remove temp file.
+			std::remove(("/tmp/Pt.tersoff."+id).c_str());
+
 			if (buffer[0] == '\0') return std::nan("invalid individual");
 			double x97Ptbcc = std::atof(buffer);	
 
 			// Finally, perform the fitness calculations.
 			double diff = ptbcc - x97Ptbcc;
+			
 
-			return (-1)*(DFT_VALUE-diff)*(DFT_VALUE-diff); // TODO: This is not actually the fitness yet.
+			return (-1)*(DFT_VALUE-diff)*(DFT_VALUE-diff);
 		}
 
 	public:
