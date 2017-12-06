@@ -1,8 +1,10 @@
-#include "Individual.h"
-#include "Random.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <utility>
+#include <vector>
+#include "Individual.h"
+#include "Random.h"
 
 using std::string;
 
@@ -23,7 +25,7 @@ class Genetics
 			_popSize = population;
 		}
 
-		~Genetics()
+		~Genetics() {}
 
 		// Commence crossover on two given individuals
 		void Crossover(Individual& ind_1, Individual& ind_2)
@@ -34,14 +36,14 @@ class Genetics
 
 			// Exchange the traits from the threshold beyond.
 			// According to Cantu PDF, it's a simple swap.
-			for (auto pair<string, double> : ind_1) {
+			for (const std::pair<string, double> &param: ind_1) {
 				if (count < cross_thresh) {
 					count++;
 					continue;
 				}
-				auto temp = pair;
-				ind_1[pair.first] = ind_2[pair.first];
-				ind_2[pair.first] = temp;
+				auto temp = param;
+				ind_1.setParameter(param.first, ind_2[param.first]);
+				ind_2.setParameter(temp);
 			}
 		}
 
@@ -50,21 +52,21 @@ class Genetics
 			ind.recalc(trait);
 		}
 
-		// Iterates through the population to find the best parent.
-		// TODO: population is the set of individuals in the population
-		Individual TournamentSelection(Individual &population, int size) {
-			Individual best = NULL;
+		// Grabs the best N parents 
+		std::vector<Individual> TournamentSelection(std::vector<Individual> &population, int N) {
+			std::vector<Individual> result;
 			double fitness = 0.0;
-			for (int i = 0; i < size; i++) {
-				auto sel = r.integer(0, size); 
-				Individual test = population[sel];  // Select a random individual
-
-				// The best parent is the individual with the highest fitness.
-				if (test.fitness > fitnes) {
-					best = test;
-				}	
+			auto len = population.size();
+			for (auto i = N; i < len; i++) {
+				result.push_back(population[i]);
 			}
-			return best;
+			return result;
+		}
+
+		// Rank the individuals by their fitness values.
+		// Used by std::sort() of the vector in main.
+		static bool RankIndividuals(Individual &first, Individual &second) {
+			return (first.fitness > second.fitness);
 		}
 
 };

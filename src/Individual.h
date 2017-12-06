@@ -131,6 +131,11 @@ class Individual
 		// Example: individual["C"] returns parameter C.
 		double operator[](string parameter) { return parameters[parameter]; }
 
+		// Allows this individual to be assigned to another individual entirely.
+		bool operator=(const Individual& assign) {
+			parameters = assign.parameters;
+			fitness = assign.fitness;
+		}
 		// Iterating over this class will iterate over parameter map.
 		auto begin() { return parameters.begin(); }
 		auto end() { return parameters.end(); }
@@ -175,4 +180,15 @@ class Individual
 			return ss.str();	
 		}
 
+		// Sets the parameter to the given pair.
+		// Used in Genetics for the crossover of traits.
+		void setParameter(std::pair<string, double> param) {
+			parameters[param.first] = param.second;
+		}
+		
+		// Sets the value of the parameter given by the string and double.
+		// Used in Genetics for the crossover of traits.
+		void setParameter(string param, double value) {
+			parameters[param] = value; 
+		}
 };
