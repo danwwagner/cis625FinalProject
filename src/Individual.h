@@ -123,6 +123,7 @@ class Individual
 		}
 		Individual (const Individual& other)
 		{
+			parameters = other.parameters;
 			fitness = other.fitness;	
 		}
 		~Individual() {}
