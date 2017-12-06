@@ -36,7 +36,7 @@ class Genetics
 
 			// Exchange the traits from the threshold beyond.
 			// According to Cantu PDF, it's a simple swap.
-			for (const std::pair<string, double> &param: ind_1) {
+			for (auto param: ind_1) {
 				if (count < cross_thresh) {
 					count++;
 					continue;

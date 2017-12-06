@@ -42,18 +42,32 @@ int main (int argc, char** argv)
 	// Tournament selection of best two parents
 	std::vector<Individual>  parents = genetic_algorithm.TournamentSelection(individuals, 2);
 
-	// Perform crossover of the parents' traits.
-	genetic_algorithm.Crossover(parents[0], parents[1]);
-	
-	// Perform mutation on a fraction of the individuals.
-	// TODO: How to select random trait for mutation?
 	Random r;
-	int fraction = r.integer(0, num_individuals);
-	for (auto i = 0; i < fraction; i++) {
-		genetic_algorithm.Mutate(individuals[i], "C");
-	}
+	double c_prob = r.real(0.0, 1.0);
+        double m_prob = r.real(0.0, 1.0);
 
+	// Perform crossover of the parents' traits.
+	if (c_prob > 0.1) genetic_algorithm.Crossover(parents[0], parents[1]);
+
+	if (m_prob <= 0.1) {
+		// Perform mutation on a fraction of the individuals.
+		// TODO: How to select random trait for mutation?
+		int fraction = r.integer(0, num_individuals);
+		int trait = r.integer(0, 11);
+		string param;
+		int count = 0;
+		for (auto pair : parents[0]) {
+			if (count == trait) {
+				param = pair.first;
+				break;
+			}
+			count++;
+		}
+		for (auto i = 0; i < fraction; i++) {
+			genetic_algorithm.Mutate(individuals[i], param);
+		}
+	}
 	// TODO: Both the old and new individuals are ordered and ranked for fitness.	
 	return 0;
-
 }
+
