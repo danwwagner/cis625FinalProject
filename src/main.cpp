@@ -1,8 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <omp.h>
+#include <algorithm>
 #include "Individual.h"
 #include "ParameterValues.h"
+#include "Genetics.h"
+#include "Random.h"
+
 int main (int argc, char** argv)
 {
 	if (argc != 4)
@@ -29,5 +33,27 @@ int main (int argc, char** argv)
 			individuals.push_back(test);
 		}
 	}
+
+	// Genetic Algorithm -- run on the master node.
+
+	// Rank the order of the parameter sets (rank individuals by fitness)
+	Genetics genetic_algorithm(0.9, 0.1, 11, num_individuals);
+	std::sort(individuals.begin(), individuals.end(), genetic_algorithm.RankIndividuals);
+	// Tournament selection of best two parents
+	std::vector<Individual>  parents = genetic_algorithm.TournamentSelection(individuals, 2);
+
+	// Perform crossover of the parents' traits.
+	genetic_algorithm.Crossover(parents[0], parents[1]);
+	
+	// Perform mutation on a fraction of the individuals.
+	// TODO: How to select random trait for mutation?
+	Random r;
+	int fraction = r.integer(0, num_individuals);
+	for (auto i = 0; i < fraction; i++) {
+		genetic_algorithm.Mutate(individuals[i], "C");
+	}
+
+	// TODO: Both the old and new individuals are ordered and ranked for fitness.	
 	return 0;
+
 }
