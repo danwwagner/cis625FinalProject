@@ -68,7 +68,7 @@ class Genetics
 		// Rank the individuals by their fitness values.
 		// Used by std::sort() of the vector in main.
 		static bool RankIndividuals(Individual &first, Individual &second) {
-			return (first.fitness > second.fitness);
+			return (first.fitness < second.fitness);
 		}
 
 };
