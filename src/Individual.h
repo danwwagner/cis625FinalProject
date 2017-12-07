@@ -185,11 +185,17 @@ class Individual
 		// Used in Genetics for the crossover of traits.
 		void setParameter(std::pair<string, double> param) {
 			parameters[param.first] = param.second;
+			do { 
+				fitness = EvaluateFitness();
+		       	} while (std::isnan(fitness));
 		}
 		
 		// Sets the value of the parameter given by the string and double.
 		// Used in Genetics for the crossover of traits.
 		void setParameter(string param, double value) {
 			parameters[param] = value; 
+			do { 
+				fitness = EvaluateFitness();
+		       	} while (std::isnan(fitness));
 		}
 };
