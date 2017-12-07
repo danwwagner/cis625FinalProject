@@ -29,7 +29,7 @@ class Individual
 			tmp.close();
 
 			// First, we need to run lammps using the Ptbcc data.
-			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /usr/bin/lmp_mpi";
+			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /usr/bin/lammps";
 			string awk_cmd = "awk '/Energy/{getline; print $3}'";
 			string inPtbcc = "printf 'dimension 3\n"
 							 "boundary p p p\n"
