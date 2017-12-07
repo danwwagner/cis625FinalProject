@@ -29,7 +29,7 @@ class Individual
 			tmp.close();
 
 			// First, we need to run lammps using the Ptbcc data.
-			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /usr/bin/lammps";
+			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /usr/bin/lmp_mpi";
 			string awk_cmd = "awk '/Energy/{getline; print $3}'";
 			string inPtbcc = "printf 'dimension 3\n"
 							 "boundary p p p\n"
@@ -185,17 +185,19 @@ class Individual
 		// Used in Genetics for the crossover of traits.
 		void setParameter(std::pair<string, double> param) {
 			parameters[param.first] = param.second;
-			do { 
-				fitness = EvaluateFitness();
-		       	} while (std::isnan(fitness));
 		}
 		
 		// Sets the value of the parameter given by the string and double.
 		// Used in Genetics for the crossover of traits.
 		void setParameter(string param, double value) {
 			parameters[param] = value; 
+		}
+
+		// Recalculates fitness after a crossover operation.
+		void crossoverFitness() {
 			do { 
 				fitness = EvaluateFitness();
 		       	} while (std::isnan(fitness));
+	
 		}
 };

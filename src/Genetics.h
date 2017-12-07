@@ -45,6 +45,8 @@ class Genetics
 				ind_1.setParameter(param.first, ind_2[param.first]);
 				ind_2.setParameter(temp);
 			}
+			ind_1.crossoverFitness();
+			ind_2.crossoverFitness();
 		}
 
 		// Mutates a single trait of the given individual by recalculating it.
