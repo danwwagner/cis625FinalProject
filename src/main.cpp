@@ -43,6 +43,8 @@ int main (int argc, char** argv)
 	// Rank the order of the parameter sets (rank individuals by fitness)
 	Genetics genetic_algorithm(0.9, 0.1, 11, num_individuals);
 	std::sort(individuals.begin(), individuals.end(), genetic_algorithm.RankIndividuals);
+	
+	return 0;
 	do 
 	{
 		prevConverge = converge;

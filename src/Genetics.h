@@ -59,7 +59,7 @@ class Genetics
 			std::vector<Individual> result;
 			double fitness = 0.0;
 			auto len = population.size();
-			for (auto i = N; i < len; i++) {
+			for (auto i = 0; i < N; i++) {
 				result.push_back(population[i]);
 			}
 			return result;
