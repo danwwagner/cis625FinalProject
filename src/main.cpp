@@ -44,7 +44,6 @@ int main (int argc, char** argv)
 	Genetics genetic_algorithm(0.9, 0.1, 11, num_individuals);
 	std::sort(individuals.begin(), individuals.end(), genetic_algorithm.RankIndividuals);
 	
-	return 0;
 	do 
 	{
 		prevConverge = converge;
@@ -98,6 +97,7 @@ int main (int argc, char** argv)
 		converge /= -100;
 		std::cout << "Convergence check: " << converge << std::endl;
 		// Iterate until the genetic algorithm does not find any better individuals -- compare to DFTs?
+
 	} while (converge > prevConverge);
 
 	//Pull the top 20 individuals and use Simplex to locally minimize parameters.
