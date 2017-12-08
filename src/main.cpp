@@ -39,18 +39,21 @@ int main (int argc, char** argv)
 	std::vector<Individual> best;
 	float converge = 0;
 	float prevConverge;
+
+	// Rank the order of the parameter sets (rank individuals by fitness)
+	Genetics genetic_algorithm(0.9, 0.1, 11, num_individuals);
+	std::sort(individuals.begin(), individuals.end(), genetic_algorithm.RankIndividuals);
 	do 
 	{
 		prevConverge = converge;
-		// Rank the order of the parameter sets (rank individuals by fitness)
-		Genetics genetic_algorithm(0.9, 0.1, 11, num_individuals);
-		std::sort(individuals.begin(), individuals.end(), genetic_algorithm.RankIndividuals);
+	
 		// Tournament selection of best two parents
 		std::vector<Individual>  parents = genetic_algorithm.TournamentSelection(individuals, 2);
 
 		Random r;
 		double c_prob = r.real(0.0, 1.0);
 	        double m_prob = r.real(0.0, 1.0);
+		std::cout << "Parent fitnesses: " << parents[0].fitness << ", " << parents[1].fitness << std::endl;
 
 		// Perform crossover of the parents' traits.
 		if (c_prob > 0.1) { std::cout << "Crossover." << std::endl; genetic_algorithm.Crossover(parents[0], parents[1]); }
@@ -83,7 +86,6 @@ int main (int argc, char** argv)
 		std::cout << "Sorting individuals." << std::endl;
 		// Both the old and new individuals are ordered and ranked for fitness.
 		std::sort(individuals.begin(), individuals.end(), genetic_algorithm.RankIndividuals);
-
 		best.clear();
 		// Retain the best 100 individuals for future generations.	
 		for (auto k = 0; k < 100; k++) {
