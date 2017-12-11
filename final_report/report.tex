@@ -70,17 +70,10 @@ will be taking in order to parallelize this algorithm.  Following that, we will 
  	\label{fig:arch}
  \end{figure}
 
- The main optimizations will be taking place within the global and local optimization sections, as seen above. We will place a majority of our implementation within the global area, with the local section carried out primarily with LAMMPS.\\
- ~\newline 
- A global single-population master-slave genetic algorithm was chosen as the best method of parallelization. The master node receives one population and divides individuals between the slave nodes.  These slave nodes will evaluate the fitness of individuals they receive and send the results back to the master node.  A visualization of this technique can be seen in the following figure.
- 
- \begin{figure}[H]
- 	\centering
- 	\includegraphics[width=\linewidth,height=5cm,keepaspectratio]{model.png}
- 	\caption[Master-Slave Genetic Algorithm Implementation]{Master-Slave Distributed Genetic Algorithm. Adapted from \cite{Cantu}}
- 	\label{fig:arch}
- \end{figure}
+We will begin by discussing the hardware used for our project, then we will discuss the generation of parameter sets and the evaluation of the objective function for each individual first, as these
+two processes work closely together. To conclude the section, we will discuss the genetic algorithm and the simplex method. 
 
+\subsection*{Hardware}
 
 We will realize this solution using several nodes on the Beocat supercomputing cluster.  Initially, we plan to restrict our usage to the Elf class nodes for benchmarking. Their specifications can be seen in the accompanying table.
 ~\newline
@@ -98,6 +91,22 @@ We will realize this solution using several nodes on the Beocat supercomputing c
 		10GbE/QDR Infiniband & Mellanox Technologies MT27500 Family \\ \hline
 	\end{tabular}
 \end{table}
+
+\subsection*{Individual Generation and Fitness Evaluation using LAMMPS}
+
+Before the genetic algorithm can begin, we needed to generate random parameter sets which will function as individuals for the genetic algorithm. 
+A parameter set consists of 11 parameters, each of which represent atomic traits. We were given starting values for these traits and were told to vary them by $\pm$ 25\%. 
+With this information, we decided to create a C++ class to represent an individual and help keep our data organized. This class holds the parameter values in a map, which maps the parameter name to its value. 
+This was chosen because it makes iterating through the parameter set extremely easy, since C++ maps support foreach loops by default. When the class is constructed, we use the new
+random number generator in C++ 11 to generate values for each trait in the parameter map. Once constructed, users of the class can easily access the parameter map using the class's 
+indexer, which we have overrided to index directly into the map. \\
+~\newline
+Our Individual class also hold another very important value for our algorithm: the fitness. This value is calculated at the time of class construction. In order to get this value,
+we have to use LAMMPS. This proved to be one of the most challenging parts of this program. LAMMPS is not a very easy program to use and much of the data that we originally received
+from Dr. Liu did not work correctly and we did not know how to use it. We first tried to run LAMMPS as a standalone program from the terminal, just to get an idea of what kind of
+input it expects and what kind of output it gives. 
+
+\subsection*{Genetic Algorithm}
 
 ~\newline
 One computing node will be designated as the master node, while several other nodes will be the slave nodes.  OpenMPI in C++ will be used in order to facilitate communication between the master and slaves. The master node will receive a population of randomly generated parameter sets and the training set provided.  It will partition the population into subsets and send the sets to slave nodes for evaluation.  The size of these partitions could vary; ideally, each node would contain a chunk that fits wholly within the L3 cache. Each slave node will evaluate the fitness of each individual within their subset. Then, they will transfer the results back to the  master node for modification via trait crossover and mutation. The best one hundred individuals will be retained for subsequent generations.\\
