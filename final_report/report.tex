@@ -110,6 +110,11 @@ input it expects and what kind of output it gives.
 
 ~\newline
 One computing node will be designated as the master node, while several other nodes will be the slave nodes.  OpenMPI in C++ will be used in order to facilitate communication between the master and slaves. The master node will receive a population of randomly generated parameter sets and the training set provided.  It will partition the population into subsets and send the sets to slave nodes for evaluation.  The size of these partitions could vary; ideally, each node would contain a chunk that fits wholly within the L3 cache. Each slave node will evaluate the fitness of each individual within their subset. Then, they will transfer the results back to the  master node for modification via trait crossover and mutation. The best one hundred individuals will be retained for subsequent generations.\\
+
+~\newline
+Our Genetics class will handle the crossover of traits and the mutation of $\pm$ 33\% of the individuals.  Crossovers take two individuals and swaps their traits starting at a random trait number.  Then, the appropriate trait is found and the individuals exchange their values for that trait.  At the end of the crossover, the two individuals' fitnesses need to be recalculated and are done so with a call to LAMMPS.  Mutations are performed on a single individual that is randomly chosen from the dataset.  The appropriate trait is found (similarly to crossovers) and its value in the individual is recalculated.  Afterwards, its fitness is reevaluated.
+
+~\newline
 ~\newline 
 This process will continue until the genetic algorithm fails to return better individuals than the previous run.  At this convergence step, the twenty best individuals will be selected to undergo local minimization by the Simplex method.  Finally, the most optimized individual results will be the best set of parameters for this generation. \\
 ~\newline
@@ -118,7 +123,8 @@ The Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS) package w
 A base run time of one hour per population has been established by Dr. Bin Liu.  Our implementation will run the same dataset, with the results and run times being compared for accuracy and performance.  We are expecting at least a factor of ten speedup on a single core by using OpenMPI and distributing the work across several nodes.
 
 
-
+\section*{Simplex Method}
+The Simplex Method is a way of locally minimizing parameters of an equation.  Each parameter is constrained to a certain range and permuted slightly in an attempt to minimize a functional value.  Typically, the equations are set up in matrix form.  On each iteration, the simplex advances towards a local minimum. 
 
 \newpage
 \section*{Conclusion}
