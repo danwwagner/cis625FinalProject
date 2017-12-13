@@ -109,7 +109,7 @@ input it expects and what kind of output it gives.
 \subsection*{Genetic Algorithm}
 
 ~\newline
-One computing node was designated as the master node, while several other nodes were the slave nodes.  OpenMP in C++ will be used in order to facilitate communication between the master and slaves. The master node received a population of randomly generated parameter sets and the training set provided.  It partitioned the population into subsets and sent the sets to slave nodes for evaluation.  The size of these partitions could vary; ideally, each node contained a chunk that fits wholly within the L3 cache. Each slave node evaluated the fitness of each individual within their subset. Then, they transfered the results back to the  master node for modification via trait crossover and mutation. The best one hundred individuals were retained for subsequent generations.  Once the individuals' fitnesses converged, and no better individuals were found, the top individual was found to be the optimized set of parameters.\\
+One computing node was designated as the master node, while several other nodes were the slave nodes.  OpenMP in C++ will be used in order to facilitate communication between the master and slaves. The master node received a population of randomly generated parameter sets and the training set provided.  It partitioned the population into subsets and sent the sets to slave nodes for evaluation.  The size of these partitions could vary; ideally, each node contained a chunk that fits wholly within the L3 cache. Each slave node evaluated the fitness of each individual within their subset. Then, they transfered the results back to the  master node for modification via trait crossover and mutation. The best one hundred individuals were retained for subsequent generations.  Once their fitnesses converged, and no better individuals were found, the top individual was found to be the optimized set of parameters.\\
 
 ~\newline
 Our Genetics class handled the crossover of traits and the mutation of $\pm$ 33\% of the individuals.  Crossovers took two individuals and swaps their traits starting at a random trait number.  Then, the appropriate trait was found and the individuals exchanged their values for that trait.  At the end of the crossover, the two individuals' fitnesses needed to be recalculated and were done so with a call to LAMMPS.  Mutations are performed on a single individual that is randomly chosen from the dataset.  The appropriate trait was found (similarly to crossovers) and its value in the individual is recalculated.  Afterwards, its fitness is reevaluated. \\
@@ -130,7 +130,7 @@ The Simplex Method is a way of locally minimizing parameters of an equation.  Ea
 \section*{Conclusion}
 We have parallelized the process of optimizing hybrid material properties in genetic algorithms.  A global single-population master-slave approach  divided up the population into subsets of individuals and then passed them to slave nodes.  Slaves operated on their data with LAMMPS and evaluated the fitness of each individual.  These results were sent back to the master node who performed genetic operations on them.
 
-% Mention speedup.
+% Mention average speedup?
 
 \section*{Future Work}
 Future work will include implementing the master-slave genetic algorithm using OpenMPI and C++ with an interface into LAMMPS.  The software will be benchmarked and checked for accuracy.
