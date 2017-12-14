@@ -104,7 +104,33 @@ indexer, which we have overridden to index directly into the map. \\
 Our Individual class also held another very important value for our algorithm: the fitness. This value was calculated at the time of class construction. In order to get this value,
 we had to use LAMMPS. This proved to be one of the most challenging parts of this program. LAMMPS was not a very easy program to use and much of the data that we originally received
 from Dr. Liu did not work correctly and we did not know how to use it. We first tried to run LAMMPS as a standalone program from the terminal, just to get an idea of what kind of
-input it expects and what kind of output it gives. 
+input it expects and what kind of output it gives. We discovered that LAMMPS requires three input files. Below is a table showing each file and its purpose.
+
+\begin{table}[ht]
+	\centering
+	\caption{LAMMPS Input Files}
+	\label{lammpsinput}
+	\begin{tabular}{|l|l|}
+		\hline
+		in.pt & LAMMPS configuration options. Required for every LAMMPS run \\ \hline
+		data.in & Atomic geometry specification. Required for each type of atom used in simulation \\ \hline
+		Pt.tersoff & Atomic parameter definition \\ \hline
+	\end{tabular}
+\end{table}
+
+Our first concern when finding out how dependent LAMMPS is on these files was that file I/O was going to slow our program down greatly. LAMMPS has a C++ library, which we hoped would allow us to not even have to deal with file I/O and starting new processes at all, but unfortunately, the LAMMPS C++ library is just a simple wrapper around the normal LAMMPS executable. It will start the LAMMPS process for you, and allow you to specify an in.pt file as a string, but it does not provide a simple way to retrieve the results. LAMMPS will simply print the results as usual to the standard output stream. As far as we could tell, there was no way to directly retrieve the value we were looking for with the library.\\
+~\newline
+Due to the complexity and limited documentation of this library, we instead decided to just create our own code to interface with LAMMPS. Like the library, we use \texttt{popen()} to start a process. This allows us to easily gain access to its standard output stream using the standard C library functions like \texttt{fgets()}. We also piped in our in.pt file which is generated for each individual by our C++ code. This whole process was very simple to implement, unlike the LAMMPS library which made it difficult to access the output pipe and filter the output for the value we wanted. In our code, we piped the LAMMPS output into \texttt{awk} which searched for and returned the value we wanted. We don't feel that writing the code to do this in C/C++ would be significantly faster. As one will see in the performance profile, the time spent running LAMMPS itself vastly outweighs overhead from running \texttt{awk}.  \\
+~\newline
+As for the other files, the data.in file is shared by all LAMMPS processes because LAMMPS only needs to read from this file, not write. LAMMPS requires us to leave it on the file system anyway. The last file, Pt.tersoff, is randomly generated for each individual by our program. It contains the randomly generated parameters discussed earlier. Like the data.in file, LAMMPS requires this file to be present on the file system. For our case, we simply store it in a temporary directory where it will be deleted later on. Both of these files are very small, so we do not feel that they significantly impacted our program's performance. \\
+~\newline
+\subsubsection*{Parallelization of Individual Generation}
+
+After we implemented our Individual class, we discovered that it was taking approximately 15 seconds to generate each individual. This wasn't fast enough, considering we needed to have 100 individuals for our genetic algorithm. We decided to parallelize the generation of individuals, since they are not dependent on each other. This was a very straightforward process. We used OpenMP to spawn a large number of threads. Each thread will generate one individual and add it to the list of individuals that we are generating. A critical section was added to ensure two threads do not add to this list at the same time. The amount of threads that we spawn is equal to the number of cores available divided by the number of cores we permit LAMMPS to use. \\
+~\newline
+
+ 
+
 
 \subsection*{Genetic Algorithm}
 
