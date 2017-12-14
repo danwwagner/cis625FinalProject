@@ -154,19 +154,19 @@ The original algorithm was quoted by Dr. Liu to have an estimated runtime of one
 \begin{figure}[H]
 	\includegraphics[width=\linewidth,height=10cm,keepaspectratio]{results.png}
 	\caption[Run Times per Core]{Code Runtime per Number of Cores, 1 LAMMPS Core.}
-	\label{fig:arch}
+	\label{fig:runtimes1core}
 \end{figure}
 
 ~\newline
 These runtimes can vary due to the nature of the genetic algorithm.  There was no constant number of mutated individuals, as only a random fraction of them were mutated.  The mutation process itself only occurred with a 0.1 probability.  Additionally, since both crossover and mutation must call LAMMPS to recalculate the individual's fitness, the number of iterations it takes for LAMMPS to approve of the parameters can increase runtime. \\
 
 ~\newline
-A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the number of cores increased, the runtime improved mostly linearly (see Table 2).  More cores yielded additional threads to create and mutate the population with.  
+A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the number of cores increased, the runtime improved mostly linearly (see Table~\ref{speedups1core}).  More cores yielded additional threads to create and mutate the population with.  
 
 \begin{table}[ht]
 	\centering
 	\caption{Speedups per Threads, 1 LAMMPS Core}
-	\label{runtimes}
+	\label{speedups1core}
 	\begin{tabular}{|l|l|l|l|l|l|}
 		\hline
 		Threads           	& 1  & 2 & 4 & 8 & 16					\\
@@ -180,20 +180,20 @@ A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the
 	\centering
 	\includegraphics[width=10cm,height=10cm,keepaspectratio]{profile.png}
 	\caption[Profiling]{Code Profile.}
-	\label{fig:arch}
+	\label{fig:codeprofile}
 \end{figure}
 
-The figure above demonstrates the main areas that the program spent time in.  These two sections were performing the genetic operations and initially generating the population's individuals.  The generation was generated at the beginning, while the genetic algorithm iterated multiple times before achieving convergence.  As a result, more time was spent performing crossovers and mutations than initially creating the population. \\
+Figure~\ref{fig:codeprofile} demonstrates the main areas that the program spent time in.  These two sections were performing the genetic operations and initially generating the population's individuals.  The generation was generated at the beginning, while the genetic algorithm iterated multiple times before achieving convergence.  As a result, more time was spent performing crossovers and mutations than initially creating the population. \\
 
 ~\newline
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=10cm,height=10cm,keepaspectratio]{execution.png}
 	\caption[Execution]{Code Execution Profile.}
-	\label{fig:arch}
+	\label{fig:execprofile}
 \end{figure}
 
-The figure above shows the amount of time spent in LAMMPS versus the rest of the program.  LAMMPS overwhelmingly takes the most time to complete its operations, while the main C++ program takes very little time.  LAMMPS computations dominate our code when evaluating the fitness of individuals, which happens at the beginning, and during genetic operations.  The C++ program, outside of LAMMPS, spends little time comparatively to sort the individuals, determine the probabilities of genetic operations, and print the results. \\
+Figure~\ref{fig:execprofile} shows the amount of time spent in LAMMPS versus the rest of the program.  LAMMPS overwhelmingly takes the most time to complete its operations, while the main C++ program takes very little time.  LAMMPS computations dominate our code when evaluating the fitness of individuals, which happens at the beginning, and during genetic operations.  The C++ program, outside of LAMMPS, spends little time comparatively to sort the individuals, determine the probabilities of genetic operations, and print the results. \\
 
 \newpage
 \section*{Conclusions}
