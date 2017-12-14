@@ -71,7 +71,7 @@ took in order to parallelize this algorithm.  Following that, we will present ou
  \end{figure}
 
 We will begin by discussing the hardware used for our project, then we will discuss the generation of parameter sets and the evaluation of the objective function for each individual first, as these
-two processes work closely together. To conclude the section, we will discuss the genetic algorithm and the simplex method. 
+two processes work closely together. To conclude the section, we will discuss the genetic algorithm and the results. %and the simplex method. 
 
 \subsection*{Hardware}
 
@@ -123,14 +123,52 @@ The Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS) package w
 A base run time of one hour per population was established by Dr. Bin Liu.  Our implementation ran the same dataset, with the results and run times being compared for accuracy and performance.  We were expecting at least a factor of ten speedup on a single core by using OpenMP and distributing the work across several nodes.\\
 
 
-\section*{Simplex Method}
-The Simplex Method is a way of locally minimizing parameters of an equation.  Each parameter is constrained to a certain range and permuted slightly in an attempt to minimize a functional value.  Typically, the equations are set up in matrix form.  On each iteration, the simplex advances towards a local minimum. 
+%\section*{Simplex Method}
+%The Simplex Method is a way of locally minimizing parameters of an equation.  Each parameter is constrained to a certain range and permuted slightly in an attempt to minimize a functional value.  Typically, the equations are set up in matrix form.  On each iteration, the simplex advances towards a local minimum. 
 
 \newpage
-\section*{Conclusion}
-We have parallelized the process of optimizing hybrid material properties in genetic algorithms.  A global single-population master-slave approach  divided up the population into subsets of individuals and then passed them to slave nodes.  Slaves operated on their data with LAMMPS and evaluated the fitness of each individual.  These results were sent back to the master node who performed genetic operations on them.
+\section*{Results}
+The original algorithm was quoted by Dr. Liu to have an estimated runtime of one hour per generation.  These generations contained one hundred random individuals.  Each run first generated the generation and then performed the analysis on them.  The runs used up to sixteen cores and had one dedicated LAMMPS core.
 
-% Mention average speedup?
+\begin{figure}[H]
+	\includegraphics[width=\linewidth,height=10cm,keepaspectratio]{results.png}
+	\caption[Run Times per Core]{Code Runtime per Number of Cores.}
+	\label{fig:arch}
+\end{figure}
+
+~\newline
+These runtimes can vary due to the nature of the genetic algorithm.  There was no constant number of mutated individuals, as only a random fraction of them were mutated.  The mutation process itself only occurred with a 0.1 probability.  Additionally, since both crossover and mutation must call LAMMPS to recalculate the individual's fitness, the number of iterations it takes for LAMMPS to approve of the parameters can increase runtime.
+
+~\newline
+A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the number of cores increased, the runtime improved mostly linearly (see Table 2).  More cores yielded additional threads to create and mutate the population with.  
+
+\begin{table}[ht]
+	\centering
+	\caption{Speedups per Core}
+	\label{runtimes}
+	\begin{tabular}{|l|l|l|l|l|l|}
+		\hline
+		Cores           	& 1  & 2 & 4 & 8 & 16					\\
+		\hline
+		Speedup 			& 1.4 & 1.8 & 3.1 & 5.5 & 7.1			\\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth,height=10cm,keepaspectratio]{profile.png}
+	\caption[Profiling]{Code Profile.}
+	\label{fig:arch}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth,height=10cm,keepaspectratio]{execution.png}
+	\caption[Execution]{Code Execution Profile.}
+	\label{fig:arch}
+\end{figure}
+\newpage
+\section*{Conclusion}
+We have parallelized the process of optimizing hybrid material properties in genetic algorithms.  A global single-population master-slave approach  divided up the population into subsets of individuals and then passed them to slave nodes.  Slaves operated on their data with LAMMPS and evaluated the fitness of each individual.  These results were sent back to the master node who performed genetic operations on them.  On average, the solution experienced a linear speedup with the number of cores.
 
 \section*{Future Work}
 Future work will include implementing the master-slave genetic algorithm using OpenMPI and C++ with an interface into LAMMPS.  The software will be benchmarked and checked for accuracy.
