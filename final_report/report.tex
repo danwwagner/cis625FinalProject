@@ -55,10 +55,7 @@ allows for approximations of the attributes needed to describe the hybrid materi
 with this technique is to provide fairly accurate results compared with ReaxFF. The authors note that
 ReaxFF will still be required for certain heterostructures like oxides. \\
 ~\newline
-However, as noted by Dr. Bin Liu, this machine learning algorithm alone is still not performing as well as 
-certain scientists require. He believes that it is possible to introduce parallelization to this existing
-algorithm in order to further improve performance. In the next section, we will discuss the approach that we
-took in order to parallelize this algorithm.  Following that, we will present our results, conclusions and future work preparations.
+Dr. Liu's work differs from the literature in that he wishes to model platinum bonds instead of cobalt and carbon. His original solution also used different tools from the literature. It was our task to first create a program to perform this experiment using the same simulation program as the literature and then find ways to improve its runtime using parallelism. In the next section, we will discuss the methodology we used to accomplish this. 
 
 \newpage
 \section*{Methodology}
@@ -124,7 +121,6 @@ Due to the complexity and limited documentation of this library, we instead deci
 ~\newline
 As for the other files, the data.in file is shared by all LAMMPS processes because LAMMPS only needs to read from this file, not write. LAMMPS requires us to leave it on the file system anyway. In our current solution, we use two data.in files, one for each type of atomic geometry that we currently support. Adding more of these files will make the simulation more accurate, and we expect Dr. Liu to do this for his work. The last file, Pt.tersoff, is randomly generated for each individual by our program. It contains the randomly generated parameters discussed earlier. Like the data.in file, LAMMPS requires this file to be present on the file system. For our case, we simply store it in a temporary directory where it will be deleted later on. Both of these files are very small, so we do not feel that they significantly impacted our program's performance. \\
 ~\newline
-
 Overall, we believe we have minimized the amount of file I/O performed in our program. One drawback to our method is that in order to add additional atomic geometry files, one has to modify the code for the Individual class, as additional LAMMPS runs need to be performed. The modifications would only involve reusing existing code, but perhaps in the future we could find a better way to handle this. 
 
 \subsubsection*{Parallelization of Individual Generation}
