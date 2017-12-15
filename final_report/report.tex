@@ -199,6 +199,8 @@ The minimum number of cores requested per run was two due to LAMMPS' requirement
 	\end{tabular}
 \end{table}
 
+This is potentially due to less individual generation.  With more LAMMPS cores, generating individuals is faster.  However, while the generation is faster, the number of individuals being concurrently processed is cut in half.  With a single LAMMPS core and eight cores, eight copies of LAMMPS can run and yield one individual each concurrently.  When LAMMPS is given two cores and eight cores, only four copies of LAMMPS are being run, albeit faster; thus, the number of individuals concurrently created is only four.
+
 ~\newline
 \begin{figure}[H]
 	\centering
