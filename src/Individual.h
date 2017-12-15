@@ -29,13 +29,13 @@ class Individual
 			tmp.close();
 
 			// First, we need to run lammps using the Ptbcc data.
-			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /usr/bin/lammps";
+			string lammps_cmd = "/usr/bin/mpirun -n "+std::to_string(NUM_LAMMPS_THREADS)+" /homes/burace17/lammps-11Aug17/src/lmp_g++_openmpi";
 			string awk_cmd = "awk '/Energy/{getline; print $3}'";
 			string inPtbcc = "printf 'dimension 3\n"
 							 "boundary p p p\n"
 							 "units real\n"
 							 "atom_style charge\n"
-							 "read_data dataPtbcc.in\n"
+							 "read_data /homes/burace17/cis625FinalProject/src/dataPtbcc.in\n"
 							 "pair_style tersoff\n"
 							 "pair_coeff * * /tmp/Pt.tersoff."+id+" Pt\n"
 							 "neighbor 2 bin\n"
@@ -65,7 +65,7 @@ class Individual
 							  "boundary p p p\n"
 							  "units real\n"
 							  "atom_style charge\n"
-							  "read_data data97xPtbcc.in\n"
+							  "read_data /homes/burace17/cis625FinalProject/src/data97xPtbcc.in\n"
 							  "pair_style tersoff\n"
 							  "pair_coeff * * /tmp/Pt.tersoff."+id+" Pt\n"
 							  "neighbor 2 bin\n"

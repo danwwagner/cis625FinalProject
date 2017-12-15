@@ -128,8 +128,6 @@ Overall, we believe we have minimized the amount of file I/O performed in our pr
 After we implemented our Individual class, we discovered that it was taking approximately 15 seconds to generate each individual. This wasn't fast enough, considering we needed to have 100 individuals for our genetic algorithm. We decided to parallelize the generation of individuals, since they are not dependent on each other. This was a very straightforward process. We used OpenMP to spawn a large number of threads. Each thread will generate one individual and add it to the list of individuals that we are generating. A critical section was added to ensure two threads do not add to this list at the same time. The amount of threads that we spawn is equal to the number of cores available divided by the number of cores we permit LAMMPS to use. \\
 ~\newline
 
- 
-
 
 \subsection*{Genetic Algorithm}
 
@@ -151,7 +149,8 @@ A base run time of one hour per population was established by Dr. Bin Liu.  Our 
 The original algorithm was quoted by Dr. Liu to have an estimated runtime of one hour per generation.  These generations contained one hundred random individuals.  Each run first generated the generation and then performed the analysis on them.  The runs used up to sixteen cores and had up to two dedicated LAMMPS cores.
 
 \begin{figure}[H]
-	\includegraphics[width=\linewidth,height=10cm,keepaspectratio]{results.png}
+	\centering
+	\includegraphics[width=10cm,height=10cm,keepaspectratio]{results.png}
 	\caption[Run Times per Core]{Code Runtime per Number of Cores, 1 LAMMPS Core.}
 	\label{fig:runtimes1core}
 \end{figure}
@@ -160,7 +159,7 @@ The original algorithm was quoted by Dr. Liu to have an estimated runtime of one
 These runtimes can vary due to the nature of the genetic algorithm.  There was no constant number of mutated individuals, as only a random fraction of them were mutated.  The mutation process itself only occurred with a 0.1 probability.  Additionally, since both crossover and mutation must call LAMMPS to recalculate the individual's fitness, the number of iterations it takes for LAMMPS to approve of the parameters can increase runtime. \\
 
 ~\newline
-A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the number of cores increased, the runtime improved mostly linearly (see Table~\ref{speedups1core}).  More cores yielded additional threads to create and mutate the population with.  
+A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the number of cores increased, the runtime improved mostly linearly (see Table~\ref{speedups1core}).  More cores yielded additional threads to create and mutate the population with.  \\
 
 \begin{table}[ht]
 	\centering
@@ -175,6 +174,32 @@ A speedup of 1.4 was obtained by simply porting the codes over into C++.  As the
 	\end{tabular}
 \end{table}
 
+~\newline
+Next, two cores were given to LAMMPS.  This allowed us to take advantage of the built-in parallelization provided by the LAMMPS package.  Interestingly, the results were worse with two cores, rather than experiencing a speedup (Figure~\ref{fig:runtimes2cores}).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm,height=10cm,keepaspectratio]{results2.png}
+	\caption[Run Times per Core]{Code Runtime per Number of Cores, 2 LAMMPS Cores.}
+	\label{fig:runtimes2cores}
+\end{figure}
+
+~\newline
+The minimum number of cores requested per run was two due to LAMMPS' requirements. As a result, the two-core speedup is taken in reference to the hour per generation benchmark while subsequent speedups are calculated off of the two-core.  Table~\ref{speedups2core} displays this information.  Compared to Table~\ref{speedups1core}, the speedups are less and runtimes are around the same values.
+\begin{table}[ht]
+	\centering
+	\caption{Speedups per Threads, 2 LAMMPS Cores}
+	\label{speedups2core}
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		Threads           	& 2 & 4 & 8 & 16					\\
+		\hline
+		Speedup 			& 1.5 & 2.1 & 3.5 & 5.6			\\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+~\newline
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=10cm,height=10cm,keepaspectratio]{profile.png}
